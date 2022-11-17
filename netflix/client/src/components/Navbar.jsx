@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './navbar.scss'
 
+import { NavLink } from 'react-router-dom';
 
 import Search from '@mui/icons-material/Search';
 import NotificationsNone from '@mui/icons-material/NotificationsNone';
@@ -19,9 +20,20 @@ const Navbar = () => {
         <div className="container">
             <div className="left">
                 <img src="https://www.freepnglogos.com/uploads/netflix-logo-0.png" alt="" />
+               
+               <NavLink to="/" className='link'>
                 <span> Home </span>
-                <span> Series</span>
-                <span>Movies</span>
+               </NavLink>
+               
+                
+                <NavLink to="/series" className='link'>
+                  <span> Series</span>
+                </NavLink>
+                
+                <NavLink to="/movies" className='link'>
+                  <span>Movies</span>
+                </NavLink>
+                
                 <span> New and popular</span>
                 <span> My List</span>
 

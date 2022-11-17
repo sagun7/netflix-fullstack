@@ -1,23 +1,46 @@
-import React, { useState } from 'react'
-import './listItem.scss'
+import React, { useEffect, useState } from 'react'
+import './listItem.scss';
+import {Link} from "react-router-dom"
 
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AddIcon from '@mui/icons-material/Add';
 import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
 import ThumbDownOffAltOutlinedIcon from '@mui/icons-material/ThumbDownOffAltOutlined';
+import axios from 'axios';
 
-const ListItem = ({index}) => {
+const ListItem = ({index, item}) => {
   const [isHovered, setIsHovered] = useState(false);
-  const trailer = "https://vimeo.com/758853923"
+  const [movie, setMovie] = useState({});
+
+  useEffect(() => {
+   const getMovie = async () =>{
+    try{
+      const res= await axios.get("/movies/find/"+item,
+        {
+          headers:{
+            token: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNmM0YTg0ODRkZTgwYmNjODA2MmNjNCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjgwNDM1NDMsImV4cCI6MTY2ODQ3NTU0M30.uRPlnf9gTEEoyvZ2wU6C1-DAV-gYvwIosq6-fjNR-u8"
+
+          },
+        }
+      );
+
+      setMovie(res.data);
+    }catch(err){
+      console.log(err);
+    }
+   }; getMovie()
+  }, [item])
+  
   return (
+    <Link to={{pathname:"/watch", movie:movie}}>
     <div className='listItem' 
     style ={{left: isHovered && index* 225 - 50 + index * 2.5}}
     onMouseEnter={()=> setIsHovered(true)} onMouseLeave={()=>setIsHovered(false) }>
-      <img src="https://m.media-amazon.com/images/M/MV5BMTc5NTk2OTU1Nl5BMl5BanBnXkFtZTcwMDc3NjAwMg@@._V1_QL75_UY281_CR0,0,190,281_.jpg"
+      <img src= {movie.img}
        alt="" />
        {isHovered && (
         <>
-           <video src={trailer} autoPlay={true} loop/>
+           <video src={movie.trailer} autoPlay={true} loop/>
 
     
       
@@ -29,18 +52,22 @@ const ListItem = ({index}) => {
           <ThumbDownOffAltOutlinedIcon className='icon' />
         </div>
         <div className="itemInfoTop">
-          <span>1 hour 14 mins</span>
-          <span className="limit">+16</span>
-          <span>1999</span>
+          <span>{movie.duration}</span>
+          <span className="limit">+{movie.limit}</span>
+          <span>{movie.year}</span>
         </div>
         <div className="desc">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda, explicabo!
+         {movie.desc}
         </div>
-        <div className="genre">Action</div>
+        <div className="genre">{movie.genre}</div>
        </div> 
        </>
           )}
     </div>
+    
+    </Link>
+    
+   
   )
 }
 

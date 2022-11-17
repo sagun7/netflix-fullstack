@@ -1,15 +1,35 @@
-import React from 'react'
+import React,{useState, useEffect} from 'react'
 import './featured.scss'
 
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import axios from 'axios';
+
 
 const Featured = ({type}) => {
+    const [content, setContent] = useState({});
+
+    useEffect(() => {
+     const getRandomContent = async() =>{
+        try{
+            const res = await axios.get(`/movies/random?type=${type}`, {
+                headers:{
+                  token: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzNmM0YTg0ODRkZTgwYmNjODA2MmNjNCIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE2NjgwNDM1NDMsImV4cCI6MTY2ODQ3NTU0M30.uRPlnf9gTEEoyvZ2wU6C1-DAV-gYvwIosq6-fjNR-u8"
+      
+                },
+              });
+            setContent(res.data[0]);
+        }catch(err){
+            console.log(err)
+        }
+     };
+     getRandomContent();
+    }, [type])
   return (
     <div className='featured'>
         {type && (
             <div className='category'>
-                <span>{type === "movie" ? "Movies" : "Series" }</span>
+                <span>{type === "movies" ? "Movies" : "Series" }</span>
                 <select name="genre" id="genre">
                     <option >Genre</option>
                     <option value="adventure">Adventure</option>
@@ -29,11 +49,13 @@ const Featured = ({type}) => {
             </div>
         )}
 
-        <img src="https://static.wixstatic.com/media/2cd43b_721ed550d5a3413093d098e223acad2a~mv2.png/v1/fill/w_320,h_156,q_90/2cd43b_721ed550d5a3413093d098e223acad2a~mv2.png" alt="" />
-         <div className="info">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRt_Qp0EbHeF_Hy0ki4OrOeJ9T_9jGtsxwqjOqkuqUk_ZoxqypivAhd7glP_atjjWQx2w0&usqp=CAU" alt="" />
+        <img src={content.img} alt="" /> 
+        <div className="info">
+            <img src={content.imgTitle} alt="" />   
             <span className="desc">
-               Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi temporibus dolor rerum itaque sunt eum minus omnis quod, quia sit modi commodi sed unde, expedita aperiam voluptatum dolorem tempore. Tenetur. </span>
+                {content.desc}
+            </span>
+               
             <div className="buttons">
                 <button className='play'>
                     <PlayCircleIcon />
